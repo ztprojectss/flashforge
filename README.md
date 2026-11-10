@@ -2,7 +2,7 @@
 
 **Purpose:** Help students study by building their own flashcard decks, quizzing themselves with flip cards, and tracking which cards they've mastered.
 
-**Live app:** _paste your GitHub Pages / Netlify link here_
+**Live app:** https://ztprojectss.github.io/flashforge/
 
 ## Features
 - **Deck builder** – add, delete, and clear cards; one-click sample deck (MIS terms)
