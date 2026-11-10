@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlashForge – Flashcard Study App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>⚡ FlashForge</h1>
+    <p class="tagline">Build your own flashcards, quiz yourself, and track what you've mastered.</p>
+  </header>
+
+  <main class="container">
+    <!-- Deck builder -->
+    <section class="panel" id="builder">
+      <h2>1. Build your deck</h2>
+      <form id="card-form" autocomplete="off">
+        <label for="front">Question / term</label>
+        <input id="front" type="text" placeholder="e.g. What does HTML stand for?" required maxlength="200" />
+        <label for="back">Answer / definition</label>
+        <input id="back" type="text" placeholder="e.g. HyperText Markup Language" required maxlength="300" />
+        <button type="submit" class="btn primary">+ Add card</button>
+      </form>
+
+      <div class="deck-actions">
+        <button type="button" class="btn" id="sample-btn">Load sample deck</button>
+        <button type="button" class="btn danger" id="clear-btn">Clear deck</button>
+      </div>
+
+      <p class="count" id="card-count">0 cards</p>
+      <ul class="card-list" id="card-list"></ul>
+    </section>
+
+    <!-- Study mode -->
+    <section class="panel" id="study">
+      <h2>2. Study</h2>
+
+      <div id="study-empty" class="empty">Add at least one card to start studying.</div>
+
+      <div id="study-area" hidden>
+        <div class="progress-wrap" aria-label="Session progress">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <p class="progress-text" id="progress-text">Card 1 of 1</p>
+
+        <div class="flashcard" id="flashcard" tabindex="0" role="button" aria-label="Flip card">
+          <div class="flashcard-inner">
+            <div class="face front" id="card-front"></div>
+            <div class="face back" id="card-back"></div>
+          </div>
+        </div>
+        <p class="hint">Click the card (or press Space) to flip</p>
+
+        <div class="grade" id="grade-buttons" hidden>
+          <button type="button" class="btn wrong" id="wrong-btn">✗ Missed it</button>
+          <button type="button" class="btn right" id="right-btn">✓ Got it</button>
+        </div>
+      </div>
+
+      <div id="results" hidden>
+        <h3 id="results-title">Session complete!</h3>
+        <div class="score-ring" id="score-ring"><span id="score-pct">0%</span></div>
+        <p id="results-msg"></p>
+        <div class="deck-actions">
+          <button type="button" class="btn primary" id="restart-btn">Study all again</button>
+          <button type="button" class="btn" id="retry-missed-btn">Retry missed cards</button>
+        </div>
+      </div>
+
+      <button type="button" class="btn" id="start-btn" hidden>Start session</button>
+    </section>
+
+    <!-- Stats -->
+    <section class="panel" id="stats">
+      <h2>3. Your progress</h2>
+      <div class="stat-grid">
+        <div class="stat"><span class="stat-num" id="stat-sessions">0</span><span>Sessions</span></div>
+        <div class="stat"><span class="stat-num" id="stat-best">0%</span><span>Best score</span></div>
+        <div class="stat"><span class="stat-num" id="stat-mastered">0</span><span>Mastered cards</span></div>
+        <div class="stat"><span class="stat-num" id="stat-streak">0</span><span>Best streak</span></div>
+      </div>
+      <p class="small">A card counts as <strong>mastered</strong> after you get it right 3 times in a row. Everything is saved in your browser.</p>
+    </section>
+  </main>
+
+  <footer class="footer">MIS 410 Mini Web App · FlashForge</footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
