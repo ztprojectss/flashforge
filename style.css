@@ -167,6 +167,7 @@ input[type="text"]:focus { outline: 2px solid var(--primary); border-color: tran
 }
 .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
 .flashcard:focus-visible .flashcard-inner { box-shadow: 0 0 0 3px var(--primary); border-radius: var(--radius); }
+.session-timer { text-align: center; color: var(--muted); font-size: 0.9rem; margin: 8px 0; font-variant-numeric: tabular-nums; }
 .face {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center; text-align: center;

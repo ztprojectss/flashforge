@@ -29,6 +29,9 @@
 
       <div class="deck-actions">
         <button type="button" class="btn" id="sample-btn">Load sample deck</button>
+        <button type="button" class="btn" id="export-btn">Export JSON</button>
+        <button type="button" class="btn" id="import-btn">Import JSON</button>
+        <input type="file" id="import-file" accept=".json,application/json" hidden />
         <button type="button" class="btn danger" id="clear-btn">Clear deck</button>
       </div>
 
@@ -54,6 +57,7 @@
             <div class="face back" id="card-back"></div>
           </div>
         </div>
+        <p class="session-timer" id="session-timer" aria-live="off">Elapsed time: 00:00</p>
         <p class="hint">Click the card (or press Space) to flip</p>
 
         <div class="grade" id="grade-buttons" hidden>

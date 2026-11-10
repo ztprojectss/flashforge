@@ -39,6 +39,8 @@ const els = {
   form: $("card-form"), front: $("front"), back: $("back"),
   list: $("card-list"), count: $("card-count"),
   sampleBtn: $("sample-btn"), clearBtn: $("clear-btn"),
+  exportBtn: $("export-btn"), importBtn: $("import-btn"),
+  importFile: $("import-file"), sessionTimerEl: $("session-timer"),
   studyEmpty: $("study-empty"), studyArea: $("study-area"), startBtn: $("start-btn"),
   flashcard: $("flashcard"), cardFront: $("card-front"), cardBack: $("card-back"),
   grade: $("grade-buttons"), rightBtn: $("right-btn"), wrongBtn: $("wrong-btn"),
@@ -165,7 +167,91 @@ els.clearBtn.addEventListener("click", () => {
   renderAll();
 });
 
+els.exportBtn.addEventListener("click", () => {
+  const data = JSON.stringify({ cards: state.cards, stats: state.stats }, null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "flashforge-deck.json";
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("Deck exported ✓");
+});
+
+els.importBtn.addEventListener("click", () => {
+  els.importFile.click();
+});
+
+els.importFile.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!data || !Array.isArray(data.cards)) {
+        showToast("Invalid deck file");
+        return;
+      }
+      let imported = 0;
+      data.cards.forEach((card) => {
+        if (typeof card.front === "string" && typeof card.back === "string" && card.front.trim() && card.back.trim() &&
+            !state.cards.some((c) => c.front.toLowerCase() === card.front.toLowerCase())) {
+          state.cards.push({
+            id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+            front: card.front.trim(), back: card.back.trim(),
+            rightInARow: Number(card.rightInARow) || 0,
+          });
+          imported++;
+        }
+      });
+      if (data.stats) {
+        state.stats.sessions = (state.stats.sessions || 0) + (data.stats.sessions || 0);
+        state.stats.best = Math.max(state.stats.best || 0, data.stats.best || 0);
+        state.stats.bestStreak = Math.max(state.stats.bestStreak || 0, data.stats.bestStreak || 0);
+      }
+      save();
+      showToast(`Imported ${imported} card${imported === 1 ? "" : "s"}`);
+      renderAll();
+    } catch {
+      showToast("Invalid JSON file");
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+});
+
 // ---------- Study session ----------
+let sessionStart = null;
+let timerInterval = null;
+
+function formatTime(ms) {
+  const totalSec = Math.floor(ms / 1000);
+  const min = Math.floor(totalSec / 60);
+  const sec = totalSec % 60;
+  if (min >= 60) {
+    const hrs = Math.floor(min / 60);
+    const m = min % 60;
+    return `${hrs}:${m.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;
+  }
+  return `${min.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;
+}
+
+function startTimer() {
+  sessionStart = Date.now();
+  const tick = () => {
+    if (els.sessionTimerEl) els.sessionTimerEl.textContent = "Elapsed time: " + formatTime(Date.now() - sessionStart);
+  };
+  tick();
+  timerInterval = setInterval(tick, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -178,11 +264,14 @@ function shuffle(arr) {
 function startSession(ids) {
   if (!ids.length) return;
   session = { queue: shuffle(ids), index: 0, correct: 0, missed: [], streak: 0, bestStreak: 0 };
+  sessionStart = null;
+  stopTimer();
   els.studyEmpty.hidden = true;
   els.startBtn.hidden = true;
   els.results.hidden = true;
   els.studyArea.hidden = false;
   showCard();
+  startTimer();
 }
 
 function currentCard() {
@@ -239,6 +328,7 @@ function finishSession() {
   state.stats.bestStreak = Math.max(state.stats.bestStreak, session.bestStreak);
   save();
 
+  stopTimer();
   els.progressBar.style.width = "100%";
   els.studyArea.hidden = true;
   els.results.hidden = false;
@@ -258,6 +348,7 @@ function finishSession() {
 }
 
 function endSessionEarly() {
+  stopTimer();
   session = null;
 }
 

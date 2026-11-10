@@ -5,7 +5,7 @@
 **Live app:** https://ztprojectss.github.io/flashforge/
 
 ## Features
-- **Deck builder** – add, delete, and clear cards; one-click sample deck (MIS terms)
+- **Deck builder** – add, delete, clear, import, and export cards as JSON; one-click sample deck (MIS terms)
 - **Study mode** – shuffled flip cards (click or Space), self-grade "Got it" / "Missed it"
 - **Feedback** – progress bar, live streak counter, toast messages, end-of-session score ring with a tailored message
 - **Retry missed** – re-study only the cards you got wrong
