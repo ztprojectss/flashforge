@@ -271,6 +271,24 @@ els.flashcard.addEventListener("click", flip);
 els.rightBtn.addEventListener("click", () => grade(true));
 els.wrongBtn.addEventListener("click", () => grade(false));
 
+// ---------- Dark mode ----------
+const DARK_KEY = "flashforge-dark";
+const darkToggle = $("dark-toggle");
+
+function applyDark(on) {
+  document.body.classList.toggle("dark", on);
+  darkToggle.textContent = on ? "☀️" : "🌙";
+}
+
+const darkOn = localStorage.getItem(DARK_KEY) === "true";
+applyDark(darkOn);
+
+darkToggle.addEventListener("click", () => {
+  const isDark = document.body.classList.contains("dark");
+  applyDark(!isDark);
+  localStorage.setItem(DARK_KEY, String(!isDark));
+});
+
 // Keyboard shortcuts: Space/Enter = flip, → or Y = got it, ← or N = missed
 document.addEventListener("keydown", (e) => {
   if (e.target.tagName === "INPUT") return;
